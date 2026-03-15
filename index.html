@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Tools Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<style>
+/* ─────────────────────────────────────────
+   TOKENS & RESET
+───────────────────────────────────────── */
+:root {
+  --font: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+
+  --sidebar-w: 232px;
+  --header-h: 54px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* Light theme */
+  --bg-page:       #F5F5F3;
+  --bg-surface:    #FFFFFF;
+  --bg-subtle:     #F0EFED;
+  --bg-hover:      #ECEAE7;
+  --bg-active:     #E6E4E0;
+
+  --border-default: rgba(0,0,0,0.08);
+  --border-strong:  rgba(0,0,0,0.14);
+
+  --text-primary:   #1A1A18;
+  --text-secondary: #6B6A65;
+  --text-tertiary:  #9B9A95;
+  --text-inverse:   #FFFFFF;
+
+  --accent:         #1A1A18;
+  --accent-subtle:  #F0EFED;
+
+  --green-bg:  #DCFCE7; --green-text:  #15803D;
+  --blue-bg:   #DBEAFE; --blue-text:   #1D4ED8;
+  --amber-bg:  #FEF9C3; --amber-text:  #854D0E;
+  --sky-bg:    #E0F2FE; --sky-text:    #0369A1;
+  --violet-bg: #EDE9FE; --violet-text: #5B21B6;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.07);
+}
+
+[data-theme="dark"] {
+  --bg-page:       #111110;
+  --bg-surface:    #1C1C1A;
+  --bg-subtle:     #242422;
+  --bg-hover:      #2C2C29;
+  --bg-active:     #343431;
+
+  --border-default: rgba(255,255,255,0.08);
+  --border-strong:  rgba(255,255,255,0.14);
+
+  --text-primary:   #F2F1EE;
+  --text-secondary: #9B9A94;
+  --text-tertiary:  #63635E;
+  --text-inverse:   #111110;
+
+  --accent:         #F2F1EE;
+  --accent-subtle:  #242422;
+
+  --green-bg:  #14532D; --green-text:  #86EFAC;
+  --blue-bg:   #1E3A5F; --blue-text:   #93C5FD;
+  --amber-bg:  #451A03; --amber-text:  #FCD34D;
+  --sky-bg:    #0C3145; --sky-text:    #7DD3FC;
+  --violet-bg: #2E1065; --violet-text: #C4B5FD;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: var(--font);
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────
+   LAYOUT
+───────────────────────────────────────── */
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────
+   SIDEBAR
+───────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-default);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.sidebar::-webkit-scrollbar { display: none; }
+
+/* Logo */
+.sidebar-logo {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+.logo-mark {
+  width: 28px; height: 28px;
+  background: var(--accent);
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-mark svg { width: 15px; height: 15px; fill: var(--text-inverse); }
+.logo-name { font-size: 13.5px; font-weight: 600; letter-spacing: -0.3px; color: var(--text-primary); }
+.logo-beta {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.4px;
+  background: var(--amber-bg); color: var(--amber-text);
+  padding: 2px 6px; border-radius: 4px; margin-left: 2px;
+}
+
+/* Sidebar sections */
+.sb-section { padding: 20px 10px 6px; }
+.sb-label {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.8px;
+  color: var(--text-tertiary); text-transform: uppercase;
+  padding: 0 8px; margin-bottom: 4px; display: block;
+}
+
+/* Nav items */
+.nav-item {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%; padding: 7px 10px;
+  border-radius: var(--radius-md);
+  border: none; background: none;
+  font-family: var(--font); font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer; text-align: left;
+  position: relative; transition: background 0.1s, color 0.1s;
+  text-decoration: none;
+}
+.nav-item:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.nav-item.active {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 2px;
+  top: 7px; bottom: 7px;
+  width: 2.5px;
+  background: var(--accent);
+  border-radius: 2px;
+}
+.nav-icon {
+  width: 15px; height: 15px;
+  opacity: 0.55; flex-shrink: 0;
+}
+.nav-item.active .nav-icon,
+.nav-item:hover .nav-icon { opacity: 1; }
+.nav-badge {
+  margin-left: auto;
+  font-size: 10.5px; font-weight: 500;
+  background: var(--bg-subtle);
+  color: var(--text-tertiary);
+  padding: 1px 6px; border-radius: 99px;
+  font-family: var(--font-mono);
+}
+
+/* Sidebar divider */
+.sb-divider {
+  height: 1px; background: var(--border-default);
+  margin: 8px 14px;
+}
+
+.sb-spacer { flex: 1; }
+
+.sidebar-footer {
+  padding: 10px 10px 16px;
+  border-top: 1px solid var(--border-default);
+}
+
+/* ─────────────────────────────────────────
+   MAIN AREA
+───────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Topbar */
+.topbar {
+  height: var(--header-h);
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-default);
+  display: flex; align-items: center;
+  padding: 0 24px; gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; }
+.topbar-sep { width: 1px; height: 18px; background: var(--border-default); }
+.topbar-crumb { font-size: 12px; color: var(--text-tertiary); }
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
+
+/* Search */
+.search-wrap { position: relative; }
+.search-wrap svg {
+  position: absolute; left: 10px; top: 50%;
+  transform: translateY(-50%);
+  width: 13px; height: 13px;
+  color: var(--text-tertiary); pointer-events: none;
+}
+.search-input {
+  height: 32px; width: 220px;
+  padding: 0 12px 0 30px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--bg-subtle);
+  font-family: var(--font); font-size: 12.5px;
+  color: var(--text-primary);
+  transition: border-color 0.15s, width 0.2s;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--border-strong);
+  background: var(--bg-surface);
+  width: 260px;
+}
+.search-input::placeholder { color: var(--text-tertiary); }
+
+/* Icon button */
+.icon-btn {
+  width: 32px; height: 32px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-subtle);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-secondary);
+  transition: background 0.1s, color 0.1s;
+}
+.icon-btn:hover { background: var(--bg-hover); color: var(--text-primary); }
+.icon-btn svg { width: 14px; height: 14px; }
+
+/* ─────────────────────────────────────────
+   CONTENT
+───────────────────────────────────────── */
+.content { padding: 28px 28px 48px; overflow-y: auto; }
+
+/* Stats row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0,1fr));
+  gap: 12px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  transition: border-color 0.15s;
+}
+.stat-card:hover { border-color: var(--border-strong); }
+.stat-label {
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--text-tertiary); margin-bottom: 8px;
+}
+.stat-value {
+  font-size: 26px; font-weight: 300;
+  letter-spacing: -1px; line-height: 1;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+.stat-sub {
+  font-size: 11.5px; color: var(--text-tertiary);
+  margin-top: 6px; display: flex; align-items: center; gap: 5px;
+}
+.stat-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%; flex-shrink: 0;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 24px; flex-wrap: wrap;
+}
+.toolbar-label { font-size: 11.5px; color: var(--text-tertiary); margin-right: 2px; }
+
+.filter-pill {
+  height: 30px; padding: 0 13px;
+  border-radius: 99px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  font-family: var(--font); font-size: 12px;
+  color: var(--text-secondary);
+  cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.1s; white-space: nowrap;
+}
+.filter-pill:hover { border-color: var(--border-strong); color: var(--text-primary); }
+.filter-pill.active {
+  background: var(--accent);
+  color: var(--text-inverse);
+  border-color: var(--accent);
+}
+.pill-dot { width: 6px; height: 6px; border-radius: 50%; }
+
+.toolbar-right { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+.view-btn {
+  width: 30px; height: 30px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-tertiary);
+  transition: all 0.1s;
+}
+.view-btn:hover, .view-btn.active { background: var(--bg-hover); color: var(--text-primary); border-color: var(--border-strong); }
+.view-btn svg { width: 13px; height: 13px; }
+
+/* Section header */
+.section-hdr {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px; margin-top: 4px;
+}
+.section-hdr-left { display: flex; align-items: center; gap: 7px; }
+.section-hdr-icon { font-size: 13px; line-height: 1; }
+.section-hdr-title {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.7px; text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.section-hdr-badge {
+  font-size: 10.5px; font-family: var(--font-mono);
+  background: var(--bg-subtle); color: var(--text-tertiary);
+  padding: 1px 7px; border-radius: 99px;
+}
+.section-hdr-line { flex: 1; height: 1px; background: var(--border-default); margin-left: 10px; }
+
+/* ─────────────────────────────────────────
+   FEATURED SCROLL STRIP
+───────────────────────────────────────── */
+#featured-section { margin-bottom: 32px; }
+
+.featured-strip {
+  display: flex; gap: 12px;
+  overflow-x: auto; padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+}
+.featured-strip::-webkit-scrollbar { height: 3px; }
+.featured-strip::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 2px; }
+
+.feat-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  padding: 18px 20px;
+  min-width: 260px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+  position: relative; overflow: hidden;
+}
+.feat-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+.feat-card::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--card-accent, var(--accent));
+  opacity: 0; transition: opacity 0.15s;
+}
+.feat-card:hover::after { opacity: 1; }
+
+.feat-top { display: flex; align-items: flex-start; justify-content: space-between; }
+.feat-icon-wrap { display: flex; align-items: center; gap: 10px; }
+.tool-icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 600;
+  flex-shrink: 0;
+  border: 1px solid var(--border-default);
+}
+.feat-name { font-size: 14px; font-weight: 600; letter-spacing: -0.2px; }
+.feat-cat  { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+.feat-desc { font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; }
+.feat-foot { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* ─────────────────────────────────────────
+   TOOL CARDS GRID
+───────────────────────────────────────── */
+.category-block { margin-bottom: 36px; }
+
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 10px;
+}
+.tools-grid.list-view { grid-template-columns: 1fr; }
+
+.tool-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 16px 18px;
+  cursor: pointer;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: border-color 0.15s, transform 0.1s;
+}
+.tool-card:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+}
+
+/* List view override */
+.list-view .tool-card {
+  flex-direction: row; align-items: center;
+  gap: 14px; transform: none;
+}
+.list-view .tool-card:hover { transform: none; }
+.list-view .tool-card-body { flex: 1; min-width: 0; }
+.list-view .tool-desc { display: none; }
+.list-view .tool-foot { margin-top: 0; }
+
+.tool-card-top { display: flex; align-items: center; gap: 10px; }
+.tool-card-info { min-width: 0; }
+.tool-name { font-size: 13.5px; font-weight: 600; letter-spacing: -0.2px; }
+.tool-cat  { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; }
+.tool-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+.tool-foot { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-top: 2px; }
+
+/* ─────────────────────────────────────────
+   BADGES & TAGS
+───────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center;
+  font-size: 10.5px; font-weight: 500;
+  padding: 2px 9px; border-radius: 99px;
+  white-space: nowrap;
+}
+.badge-free     { background: var(--green-bg);  color: var(--green-text); }
+.badge-freemium { background: var(--blue-bg);   color: var(--blue-text); }
+.badge-paid     { background: var(--amber-bg);  color: var(--amber-text); }
+.badge-featured { background: var(--sky-bg);    color: var(--sky-text); }
+.badge-new      { background: var(--violet-bg); color: var(--violet-text); }
+
+.tag {
+  font-size: 10.5px; padding: 2px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-subtle); color: var(--text-tertiary);
+  border: 1px solid var(--border-default);
+  white-space: nowrap;
+}
+
+/* ─────────────────────────────────────────
+   EMPTY STATE
+───────────────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 80px 20px;
+  color: var(--text-secondary);
+}
+.empty-icon {
+  font-size: 36px; margin-bottom: 12px; opacity: 0.4;
+}
+.empty-title { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+.empty-sub   { font-size: 13px; color: var(--text-tertiary); }
+
+/* ─────────────────────────────────────────
+   MODAL OVERLAY
+───────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,0.45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.modal-overlay.open {
+  opacity: 1; pointer-events: all;
+}
+
+.modal {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-xl);
+  width: 100%; max-width: 600px;
+  max-height: 88vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-default) transparent;
+  transform: translateY(16px) scale(0.98);
+  transition: transform 0.22s ease, opacity 0.2s ease;
+  opacity: 0;
+  position: relative;
+}
+.modal-overlay.open .modal {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Modal accent bar at top */
+.modal-accent-bar {
+  height: 3px;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  background: var(--modal-accent, var(--accent));
+}
+
+.modal-header {
+  padding: 22px 24px 18px;
+  border-bottom: 1px solid var(--border-default);
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.modal-icon {
+  width: 48px; height: 48px; flex-shrink: 0;
+  border-radius: var(--radius-lg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 600;
+  border: 1px solid var(--border-default);
+}
+.modal-title-block { flex: 1; min-width: 0; }
+.modal-name {
+  font-size: 18px; font-weight: 600;
+  letter-spacing: -0.4px; line-height: 1.2;
+  margin-bottom: 5px;
+}
+.modal-meta {
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+}
+.modal-close {
+  width: 30px; height: 30px; flex-shrink: 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-default);
+  background: var(--bg-subtle);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--text-tertiary);
+  transition: background 0.1s, color 0.1s;
+  margin-left: 8px;
+}
+.modal-close:hover { background: var(--bg-hover); color: var(--text-primary); }
+.modal-close svg { width: 13px; height: 13px; }
+
+.modal-body { padding: 22px 24px; display: flex; flex-direction: column; gap: 22px; }
+
+/* Description */
+.modal-section-label {
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.7px;
+  text-transform: uppercase; color: var(--text-tertiary);
+  margin-bottom: 8px;
+}
+.modal-desc {
+  font-size: 13.5px; color: var(--text-secondary);
+  line-height: 1.65;
+}
+
+/* Tags row */
+.modal-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* Rating bar */
+.modal-rating-row { display: flex; align-items: center; gap: 10px; }
+.rating-stars { display: flex; gap: 2px; }
+.rating-star { font-size: 14px; line-height: 1; }
+.rating-value {
+  font-size: 13px; font-weight: 600;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+.rating-bar-track {
+  flex: 1; height: 5px;
+  background: var(--bg-subtle);
+  border-radius: 99px; overflow: hidden;
+}
+.rating-bar-fill {
+  height: 100%; border-radius: 99px;
+  background: var(--modal-accent, #F59E0B);
+  transition: width 0.4s ease;
+}
+
+/* Pros & Cons */
+.pros-cons-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.pros-box, .cons-box {
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+.pros-box {
+  background: var(--green-bg);
+  border: 1px solid rgba(34,197,94,0.15);
+}
+.cons-box {
+  background: #FEF2F2;
+  border: 1px solid rgba(239,68,68,0.12);
+}
+[data-theme="dark"] .cons-box {
+  background: #3B1010;
+  border-color: rgba(239,68,68,0.2);
+}
+.pc-header {
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 10px;
+}
+.pc-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.pc-title {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.5px; text-transform: uppercase;
+}
+.pros-box .pc-title { color: var(--green-text); }
+.cons-box .pc-title { color: #B91C1C; }
+[data-theme="dark"] .cons-box .pc-title { color: #FCA5A5; }
+
+.pc-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.pc-list li {
+  font-size: 12.5px; line-height: 1.45;
+  display: flex; align-items: flex-start; gap: 7px;
+}
+.pros-box .pc-list li { color: var(--green-text); }
+.cons-box .pc-list li { color: #B91C1C; }
+[data-theme="dark"] .cons-box .pc-list li { color: #FCA5A5; }
+
+.pc-bullet {
+  width: 14px; height: 14px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px; font-size: 9px; font-weight: 700;
+}
+.pros-box .pc-bullet { background: var(--green-text); color: var(--green-bg); }
+.cons-box .pc-bullet { background: #B91C1C; color: #FEF2F2; }
+[data-theme="dark"] .cons-box .pc-bullet { background: #FCA5A5; color: #3B1010; }
+
+/* Modal footer CTA */
+.modal-footer {
+  padding: 16px 24px 22px;
+  border-top: 1px solid var(--border-default);
+  display: flex; align-items: center; gap: 10px;
+}
+.cta-primary {
+  flex: 1; height: 38px;
+  background: var(--accent); color: var(--text-inverse);
+  border: none; border-radius: var(--radius-md);
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  cursor: pointer; display: flex; align-items: center;
+  justify-content: center; gap: 7px;
+  transition: opacity 0.15s;
+}
+.cta-primary:hover { opacity: 0.85; }
+.cta-primary svg { width: 13px; height: 13px; fill: var(--text-inverse); }
+.cta-secondary {
+  height: 38px; padding: 0 16px;
+  background: var(--bg-subtle); color: var(--text-secondary);
+  border: 1px solid var(--border-default); border-radius: var(--radius-md);
+  font-family: var(--font); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: background 0.1s, color 0.1s;
+}
+.cta-secondary:hover { background: var(--bg-hover); color: var(--text-primary); }
+
+/* ─────────────────────────────────────────
+   RESPONSIVE
+───────────────────────────────────────── */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 200px; }
+}
+@media (max-width: 700px) {
+  .sidebar { display: none; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .content { padding: 16px; }
+  .pros-cons-grid { grid-template-columns: 1fr; }
+  .modal-overlay { padding: 12px; align-items: flex-end; }
+  .modal { max-height: 92vh; border-radius: var(--radius-xl) var(--radius-xl) 0 0; }
+}
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ══════════════════ SIDEBAR ══════════════════ -->
+  <aside class="sidebar" id="sidebar">
+
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <!-- Replace with your own logo SVG or <img> -->
+        <svg viewBox="0 0 16 16"><path d="M8 1L1 5v6l7 4 7-4V5L8 1zm0 2.2 4.8 2.8L8 8.8 3.2 6 8 3.2zM2.5 7.1 7 9.6v4.2L2.5 11.2V7.1zm6 6.7V9.6l4.5-2.5v4.1L8.5 13.8z"/></svg>
+      </div>
+      <span class="logo-name">AI Tools Hub</span>
+      <!-- Remove the beta tag once live -->
+      <span class="logo-beta">BETA</span>
+    </div>
+
+    <!-- ── Browse ── -->
+    <div class="sb-section">
+      <span class="sb-label">Browse</span>
+
+      <button class="nav-item active" data-cat="all" onclick="setCat(this,'all')">
+        <!-- Grid icon -->
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zm8 0A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm-8 8A1.5 1.5 0 012.5 9h3A1.5 1.5 0 017 10.5v3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm8 0A1.5 1.5 0 0110.5 9h3A1.5 1.5 0 0115 10.5v3A1.5 1.5 0 0113.5 15h-3A1.5 1.5 0 019 13.5v-3z"/>
+        </svg>
+        All Tools
+        <span class="nav-badge" id="nb-all">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="featured" onclick="setCat(this,'featured')">
+        <!-- Star icon -->
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"/>
+        </svg>
+        Featured
+        <span class="nav-badge" id="nb-featured">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="new" onclick="setCat(this,'new')">
+        <!-- Lightning icon -->
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M5.52.359A.5.5 0 016 0h4a.5.5 0 01.443.268l3.5 7A.5.5 0 0113.5 8h-3.19l.966 3.862A.5.5 0 0110.794 12H10a.5.5 0 01-.394-.807L11.5 8H8.5a.5.5 0 01-.446-.724L10.61 2H6.5l-2 4h2a.5.5 0 01.394.807L4.5 10H6a.5.5 0 01.394.807l-3.5 4A.5.5 0 012 14.5V14a.5.5 0 01.106-.307L4.5 11H3a.5.5 0 01-.394-.807L5.52.359z"/>
+        </svg>
+        New this week
+        <span class="nav-badge" id="nb-new">0</span>
+      </button>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <!-- ── Categories — ADD / REMOVE as needed ── -->
+    <div class="sb-section">
+      <span class="sb-label">Categories</span>
+
+      <!--
+        HOW TO ADD A CATEGORY:
+        1. Copy one <button> block below
+        2. Change data-cat="Your Category Name"
+        3. Change onclick to setCat(this,'Your Category Name')
+        4. Update the label text
+        5. Add matching tools in the JS DATA SECTION below
+      -->
+
+      <button class="nav-item" data-cat="Writing & Chat" onclick="setCat(this,'Writing & Chat')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M12.854.146a.5.5 0 00-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 000-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 01.5.5v.5h.5a.5.5 0 01.5.5v.5h.5a.5.5 0 01.5.5v.5h.5a.5.5 0 01.5.5v.207l6.5-6.5zM5.707 16H5l2-2h.5v-.5h.5v-.5h.5v-.5h.5l-2 2v.5h-.5v.5h-.5v.5z"/>
+        </svg>
+        Writing &amp; Chat
+        <span class="nav-badge" id="nb-Writing & Chat">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="Image & Design" onclick="setCat(this,'Image & Design')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M.002 3a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2h-12a2 2 0 01-2-2V3zm1 9v1a1 1 0 001 1h12a1 1 0 001-1V9.5l-3.777-1.947a.5.5 0 00-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 00-.63.062L1 11.001zm4-6.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"/>
+        </svg>
+        Image &amp; Design
+        <span class="nav-badge" id="nb-Image & Design">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="Coding & Dev" onclick="setCat(this,'Coding & Dev')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M10.478 1.647a.5.5 0 10-.956-.294l-4 13a.5.5 0 00.956.294l4-13zM4.854 4.146a.5.5 0 010 .708L1.707 8l3.147 3.146a.5.5 0 01-.708.708l-3.5-3.5a.5.5 0 010-.708l3.5-3.5a.5.5 0 01.708 0zm6.292 0a.5.5 0 000 .708L14.293 8l-3.147 3.146a.5.5 0 00.708.708l3.5-3.5a.5.5 0 000-.708l-3.5-3.5a.5.5 0 00-.708 0z"/>
+        </svg>
+        Coding &amp; Dev
+        <span class="nav-badge" id="nb-Coding & Dev">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="Productivity" onclick="setCat(this,'Productivity')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M8 3.5a.5.5 0 00-1 0V9a.5.5 0 00.252.434l3.5 2a.5.5 0 00.496-.868L8 8.71V3.5z"/>
+          <path d="M8 16A8 8 0 108 0a8 8 0 000 16zm7-8A7 7 0 111 8a7 7 0 0114 0z"/>
+        </svg>
+        Productivity
+        <span class="nav-badge" id="nb-Productivity">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="Audio & Video" onclick="setCat(this,'Audio & Video')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M11.536 14.01A8.473 8.473 0 0014.026 8a8.473 8.473 0 00-2.49-6.01l-.708.707A7.476 7.476 0 0113.025 8c0 2.071-.84 3.946-2.197 5.303l.708.707z"/>
+          <path d="M10.121 12.596A6.48 6.48 0 0012.025 8a6.48 6.48 0 00-1.904-4.596l-.707.707A5.483 5.483 0 0111.025 8a5.483 5.483 0 01-1.61 3.89l.706.706z"/>
+          <path d="M7 4a.5.5 0 00-.812-.39L3.825 5.5H1.5A.5.5 0 001 6v4a.5.5 0 00.5.5h2.325l2.363 1.89A.5.5 0 007 12V4z"/>
+        </svg>
+        Audio &amp; Video
+        <span class="nav-badge" id="nb-Audio & Video">0</span>
+      </button>
+
+      <button class="nav-item" data-cat="Research & Data" onclick="setCat(this,'Research & Data')">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.099zM12 6.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z"/>
+        </svg>
+        Research &amp; Data
+        <span class="nav-badge" id="nb-Research & Data">0</span>
+      </button>
+
+      <!-- ── ADD MORE CATEGORIES HERE ── -->
+
+    </div>
+
+    <div class="sb-spacer"></div>
+
+    <div class="sidebar-footer">
+      <button class="nav-item" style="color:var(--text-tertiary)">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 01-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 01.872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 012.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 012.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 01.872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 01-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 01-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 110-5.86 2.929 2.929 0 010 5.858z"/>
+        </svg>
+        Settings
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════════════ MAIN ══════════════════ -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <span class="topbar-title" id="topbar-title">All Tools</span>
+      <span class="topbar-sep"></span>
+      <span class="topbar-crumb">AI Tools Hub</span>
+      <div class="topbar-right">
+        <div class="search-wrap">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M11.742 10.344a6.5 6.5 0 10-1.397 1.398h-.001l3.85 3.85a1 1 0 001.415-1.414l-3.85-3.85a1.007 1.007 0 00-.115-.099zM12 6.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z"/>
+          </svg>
+          <input type="text" class="search-input" id="search-input" placeholder="Search tools…" oninput="onSearch(this.value)" />
+        </div>
+        <!-- Dark mode toggle -->
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+          <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M6 .278a.768.768 0 01.08.858 7.208 7.208 0 00-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 01.81.316.733.733 0 01-.031.893A8.349 8.349 0 018.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 016 .278z"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content" id="main-content">
+
+      <!-- ── Stats ── -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Total Tools</div>
+          <div class="stat-value" id="stat-total">0</div>
+          <div class="stat-sub">Across all categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Free</div>
+          <div class="stat-value" id="stat-free">0</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#22c55e"></span>No cost to use</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Freemium</div>
+          <div class="stat-value" id="stat-freemium">0</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#3b82f6"></span>Free + paid tier</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Paid</div>
+          <div class="stat-value" id="stat-paid">0</div>
+          <div class="stat-sub"><span class="stat-dot" style="background:#f59e0b"></span>Subscription</div>
+        </div>
+      </div>
+
+      <!-- ── Pricing filters ── -->
+      <div class="toolbar">
+        <span class="toolbar-label">Pricing</span>
+        <button class="filter-pill active" data-pricing="all" onclick="setPricing(this,'all')">All</button>
+        <button class="filter-pill" data-pricing="free" onclick="setPricing(this,'free')">
+          <span class="pill-dot" style="background:#22c55e"></span>Free
+        </button>
+        <button class="filter-pill" data-pricing="freemium" onclick="setPricing(this,'freemium')">
+          <span class="pill-dot" style="background:#3b82f6"></span>Freemium
+        </button>
+        <button class="filter-pill" data-pricing="paid" onclick="setPricing(this,'paid')">
+          <span class="pill-dot" style="background:#f59e0b"></span>Paid
+        </button>
+        <div class="toolbar-right">
+          <!-- Grid view -->
+          <button class="view-btn active" id="btn-grid" onclick="setView('grid')" title="Grid view">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 2.5A1.5 1.5 0 012.5 1h3A1.5 1.5 0 017 2.5v3A1.5 1.5 0 015.5 7h-3A1.5 1.5 0 011 5.5v-3zm8 0A1.5 1.5 0 0110.5 1h3A1.5 1.5 0 0115 2.5v3A1.5 1.5 0 0113.5 7h-3A1.5 1.5 0 019 5.5v-3zm-8 8A1.5 1.5 0 012.5 9h3A1.5 1.5 0 017 10.5v3A1.5 1.5 0 015.5 15h-3A1.5 1.5 0 011 13.5v-3zm8 0A1.5 1.5 0 0110.5 9h3A1.5 1.5 0 0115 10.5v3A1.5 1.5 0 0113.5 15h-3A1.5 1.5 0 019 13.5v-3z"/></svg>
+          </button>
+          <!-- List view -->
+          <button class="view-btn" id="btn-list" onclick="setView('list')" title="List view">
+            <svg viewBox="0 0 16 16" fill="currentColor"><path fill-rule="evenodd" d="M2.5 12a.5.5 0 01.5-.5h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4a.5.5 0 01.5-.5h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5zm0-4a.5.5 0 01.5-.5h10a.5.5 0 010 1H3a.5.5 0 01-.5-.5z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Featured ── -->
+      <div id="featured-section" style="margin-bottom:32px">
+        <div class="section-hdr">
+          <div class="section-hdr-left">
+            <span class="section-hdr-icon">⭐</span>
+            <span class="section-hdr-title">Featured picks</span>
+            <span class="section-hdr-badge" id="feat-count">0</span>
+          </div>
+          <span class="section-hdr-line"></span>
+        </div>
+        <div class="featured-strip" id="featured-strip"></div>
+      </div>
+
+      <!-- ── Category blocks ── -->
+      <div id="categories-container"></div>
+
+      <!-- ── Empty state ── -->
+      <div class="empty-state" id="empty-state" style="display:none">
+        <div class="empty-icon">🔍</div>
+        <div class="empty-title">No tools found</div>
+        <div class="empty-sub">Try adjusting your search or filter.</div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOnBackdrop(event)">
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-accent-bar" id="modal-accent-bar"></div>
+    <div class="modal-header">
+      <div class="modal-icon" id="modal-icon"></div>
+      <div class="modal-title-block">
+        <div class="modal-name" id="modal-name"></div>
+        <div class="modal-meta" id="modal-meta"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.646 4.646a.5.5 0 01.708 0L8 7.293l2.646-2.647a.5.5 0 01.708.708L8.707 8l2.647 2.646a.5.5 0 01-.708.708L8 8.707l-2.646 2.647a.5.5 0 01-.708-.708L7.293 8 4.646 5.354a.5.5 0 010-.708z"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <div class="modal-section-label">About</div>
+        <div class="modal-desc" id="modal-desc"></div>
+      </div>
+      <div id="modal-tags-wrap">
+        <div class="modal-section-label">Tags</div>
+        <div class="modal-tags" id="modal-tags"></div>
+      </div>
+      <div id="modal-rating-wrap">
+        <div class="modal-section-label">Community rating</div>
+        <div class="modal-rating-row">
+          <div class="rating-stars" id="modal-stars"></div>
+          <span class="rating-value" id="modal-rating-val"></span>
+          <div class="rating-bar-track">
+            <div class="rating-bar-fill" id="modal-rating-bar"></div>
+          </div>
+        </div>
+      </div>
+      <div id="modal-pc-wrap">
+        <div class="modal-section-label">Pros &amp; Cons</div>
+        <div class="pros-cons-grid">
+          <div class="pros-box">
+            <div class="pc-header">
+              <span class="pc-dot" style="background:var(--green-text)"></span>
+              <span class="pc-title">Pros</span>
+            </div>
+            <ul class="pc-list" id="modal-pros"></ul>
+          </div>
+          <div class="cons-box">
+            <div class="pc-header">
+              <span class="pc-dot" style="background:#B91C1C"></span>
+              <span class="pc-title">Cons</span>
+            </div>
+            <ul class="pc-list" id="modal-cons"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="cta-primary" id="modal-visit-btn">
+        <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8.636 3.5a.5.5 0 00-.5-.5H1.5A1.5 1.5 0 000 4.5v10A1.5 1.5 0 001.5 16h10a1.5 1.5 0 001.5-1.5V7.864a.5.5 0 00-1 0V14.5a.5.5 0 01-.5.5h-10a.5.5 0 01-.5-.5v-10a.5.5 0 01.5-.5h6.636a.5.5 0 00.5-.5z"/><path d="M16 .5a.5.5 0 00-.5-.5h-5a.5.5 0 000 1h3.793L6.146 9.146a.5.5 0 101.708.708L15 1.707V5.5a.5.5 0 001 0v-5z"/></svg>
+        Visit Website
+      </button>
+      <button class="cta-secondary" onclick="closeModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   ▼▼▼  YOUR DATA GOES HERE  ▼▼▼
+
+   Each tool object has:
+   ─────────────────────────────────────────────────
+   id          : unique number
+   name        : "Tool Name"
+   desc        : "Short description (1–2 sentences)"
+   url         : "https://tool-website.com"
+   category    : "Writing & Chat" | "Image & Design" | "Coding & Dev"
+                 "Productivity"   | "Audio & Video"  | "Research & Data"
+   pricing     : "free" | "freemium" | "paid"
+   featured    : true | false
+   isNew       : true | false
+   tags        : ["tag1", "tag2"]  ← up to 3
+   icon        : emoji or 1-2 letter abbreviation
+   iconBg      : hex color for icon background
+   accentColor : top bar color on featured cards & modal
+   rating      : number 1–5  e.g. 4.7
+   pros        : ["Pro point 1", "Pro point 2", ...]  ← up to 5
+   cons        : ["Con point 1", "Con point 2", ...]  ← up to 5
+   ─────────────────────────────────────────────────
+   ═══════════════════════════════════════════════════ */
+
+   
+const TOOLS = [
+
+  /* ── EXAMPLE TOOLS (delete these and add your own) ──────────────── */
+
+  {
+    id: 1,
+    name: "Your Tool Name",
+    desc: "A short description of what this tool does and who it's for. Keep it to one or two sentences.",
+    url: "https://example.com",
+    category: "Writing & Chat",
+    pricing: "freemium",
+    featured: true,
+    isNew: false,
+    tags: ["Tag 1", "Tag 2", "Tag 3"],
+    icon: "✦",
+    iconBg: "#EDE9FE",
+    accentColor: "#7C3AED",
+    rating: 4.5,
+    pros: [
+      "Easy to get started with",
+      "Great free tier available",
+      "Strong community support"
+    ],
+    cons: [
+      "Limited features on free plan",
+      "Can be slow at peak hours"
+    ]
+  },
+  {
+    id: 2,
+    name: "Another Tool",
+    desc: "Brief description of what makes this tool special and who should use it.",
+    url: "https://example.com",
+    category: "Image & Design",
+    pricing: "paid",
+    featured: true,
+    isNew: true,
+    tags: ["Design", "AI", "Creative"],
+    icon: "🎨",
+    iconBg: "#FCE7F3",
+    accentColor: "#EC4899",
+    rating: 4.8,
+    pros: [
+      "Stunning output quality",
+      "Fast generation speeds",
+      "Huge style variety"
+    ],
+    cons: [
+      "Paid subscription required",
+      "Steep learning curve"
+    ]
+  },
+  {
+    id: 3,
+    name: "Free Tool Example",
+    desc: "Completely free AI tool with no usage limits or paywalls.",
+    url: "https://example.com",
+    category: "Coding & Dev",
+    pricing: "free",
+    featured: false,
+    isNew: true,
+    tags: ["Open source", "Code", "Local"],
+    icon: "</>",
+    iconBg: "#D1FAE5",
+    accentColor: "#059669",
+    rating: 4.1,
+    pros: [
+      "100% free and open source",
+      "Works fully offline / locally",
+      "No data sent to third parties"
+    ],
+    cons: [
+      "Requires technical setup",
+      "No dedicated support team",
+      "Less polished UI"
+    ]
+  },
+
+  /* ── ADD YOUR REAL TOOLS BELOW ───────────────────────────────────── */
+
+];
+
+/* ═══════════════════════════════════════════════════
+   ▲▲▲  END OF DATA  ▲▲▲
+   You don't need to edit anything below this line.
+   ═══════════════════════════════════════════════════ */
+
+const CAT_ORDER = [
+  "Writing & Chat","Image & Design","Coding & Dev",
+  "Productivity","Audio & Video","Research & Data"
+];
+const CAT_ICONS = {
+  "Writing & Chat":"✍","Image & Design":"🎨","Coding & Dev":"⌨",
+  "Productivity":"⚡","Audio & Video":"🎬","Research & Data":"🔍"
+};
+const PRICING_BADGE = { free:"badge-free", freemium:"badge-freemium", paid:"badge-paid" };
+const PRICING_LABEL = { free:"Free", freemium:"Freemium", paid:"Paid" };
+
+let activeCat     = "all";
+let activePricing = "all";
+let searchQ       = "";
+let viewMode      = "grid";
+
+/* ── Filtering ── */
+function filtered() {
+  return TOOLS.filter(t => {
+    if (activeCat === "featured") return t.featured;
+    if (activeCat === "new")      return t.isNew;
+    const catOk    = activeCat === "all" || t.category === activeCat;
+    const priceOk  = activePricing === "all" || t.pricing === activePricing;
+    const q        = searchQ.toLowerCase();
+    const searchOk = !q || t.name.toLowerCase().includes(q)
+                       || t.desc.toLowerCase().includes(q)
+                       || t.tags.join(" ").toLowerCase().includes(q)
+                       || t.category.toLowerCase().includes(q);
+    return catOk && priceOk && searchOk;
+  });
+}
+
+/* ── Build featured card ── */
+function buildFeatCard(t) {
+  const d = document.createElement("div");
+  d.className = "feat-card";
+  if (t.accentColor) d.style.setProperty("--card-accent", t.accentColor);
+  d.onclick = () => openModal(t);
+  d.innerHTML = `
+    <div class="feat-top">
+      <div class="feat-icon-wrap">
+        <div class="tool-icon" style="background:${t.iconBg}">${t.icon}</div>
+        <div>
+          <div class="feat-name">${t.name}</div>
+          <div class="feat-cat">${t.category}</div>
+        </div>
+      </div>
+    </div>
+    <div class="feat-desc">${t.desc}</div>
+    <div class="feat-foot">
+      <span class="badge badge-featured">Featured</span>
+      <span class="badge ${PRICING_BADGE[t.pricing]}">${PRICING_LABEL[t.pricing]}</span>
+      ${t.isNew ? '<span class="badge badge-new">New</span>' : ''}
+    </div>`;
+  return d;
+}
+
+/* ── Build tool card ── */
+function buildToolCard(t) {
+  const d = document.createElement("div");
+  d.className = "tool-card";
+  d.onclick = () => openModal(t);
+  if (viewMode === "list") {
+    d.innerHTML = `
+      <div class="tool-icon" style="background:${t.iconBg};flex-shrink:0">${t.icon}</div>
+      <div class="tool-card-body" style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <span class="tool-name">${t.name}</span>
+          <span class="tool-cat" style="margin-top:0">${t.category}</span>
+        </div>
+        <div class="tool-foot" style="margin-top:5px">
+          <span class="badge ${PRICING_BADGE[t.pricing]}">${PRICING_LABEL[t.pricing]}</span>
+          ${t.isNew ? '<span class="badge badge-new">New</span>' : ''}
+          ${t.tags.slice(0,2).map(tg=>`<span class="tag">${tg}</span>`).join("")}
+        </div>
+      </div>
+      <div class="tool-desc" style="display:block;font-size:12px;color:var(--text-secondary);max-width:340px;flex-shrink:0">${t.desc}</div>`;
+  } else {
+    d.innerHTML = `
+      <div class="tool-card-top">
+        <div class="tool-icon" style="background:${t.iconBg}">${t.icon}</div>
+        <div class="tool-card-info">
+          <div class="tool-name">${t.name}</div>
+          <div class="tool-cat">${t.category}</div>
+        </div>
+      </div>
+      <div class="tool-desc">${t.desc}</div>
+      <div class="tool-foot">
+        <span class="badge ${PRICING_BADGE[t.pricing]}">${PRICING_LABEL[t.pricing]}</span>
+        ${t.isNew ? '<span class="badge badge-new">New</span>' : ''}
+        ${t.tags.slice(0,2).map(tg=>`<span class="tag">${tg}</span>`).join("")}
+      </div>`;
+  }
+  return d;
+}
+
+/* ── Main render ── */
+function render() {
+  const list = filtered();
+
+  /* Stats */
+  document.getElementById("stat-total").textContent    = TOOLS.length;
+  document.getElementById("stat-free").textContent     = TOOLS.filter(t=>t.pricing==="free").length;
+  document.getElementById("stat-freemium").textContent = TOOLS.filter(t=>t.pricing==="freemium").length;
+  document.getElementById("stat-paid").textContent     = TOOLS.filter(t=>t.pricing==="paid").length;
+
+  /* Topbar title */
+  const titleMap = { all:"All Tools", featured:"Featured", new:"New this week" };
+  document.getElementById("topbar-title").textContent = titleMap[activeCat] || activeCat;
+
+  /* Featured strip — only on "all" with no search */
+  const featSec   = document.getElementById("featured-section");
+  const featStrip = document.getElementById("featured-strip");
+  const featured  = TOOLS.filter(t=>t.featured);
+  featStrip.innerHTML = "";
+  document.getElementById("feat-count").textContent = featured.length;
+  if (activeCat === "all" && !searchQ && featured.length) {
+    featSec.style.display = "";
+    featured.forEach(t => featStrip.appendChild(buildFeatCard(t)));
+  } else {
+    featSec.style.display = "none";
+  }
+
+  /* Category blocks */
+  const container = document.getElementById("categories-container");
+  container.innerHTML = "";
+
+  let cats;
+  if (activeCat === "featured") {
+    const byC = {};
+    list.forEach(t=>{ if(!byC[t.category]) byC[t.category]=[]; byC[t.category].push(t); });
+    cats = CAT_ORDER.filter(c=>byC[c]);
+    cats.forEach(cat => renderCatBlock(container, cat, byC[cat]));
+  } else if (activeCat === "new") {
+    const byC = {};
+    list.forEach(t=>{ if(!byC[t.category]) byC[t.category]=[]; byC[t.category].push(t); });
+    cats = CAT_ORDER.filter(c=>byC[c]);
+    cats.forEach(cat => renderCatBlock(container, cat, byC[cat]));
+  } else if (activeCat === "all") {
+    const byC = {};
+    list.forEach(t=>{ if(!byC[t.category]) byC[t.category]=[]; byC[t.category].push(t); });
+    CAT_ORDER.filter(c=>byC[c]).forEach(cat => renderCatBlock(container, cat, byC[cat]));
+  } else {
+    renderCatBlock(container, activeCat, list);
+  }
+
+  /* Empty state */
+  document.getElementById("empty-state").style.display = list.length === 0 ? "block" : "none";
+
+  /* Sidebar badges */
+  document.getElementById("nb-all").textContent      = TOOLS.length;
+  document.getElementById("nb-featured").textContent = TOOLS.filter(t=>t.featured).length;
+  document.getElementById("nb-new").textContent      = TOOLS.filter(t=>t.isNew).length;
+  CAT_ORDER.forEach(cat => {
+    const el = document.getElementById("nb-"+cat);
+    if (el) el.textContent = TOOLS.filter(t=>t.category===cat).length;
+  });
+}
+
+function renderCatBlock(container, cat, catTools) {
+  if (!catTools || !catTools.length) return;
+  const block = document.createElement("div");
+  block.className = "category-block";
+  block.innerHTML = `
+    <div class="section-hdr">
+      <div class="section-hdr-left">
+        <span class="section-hdr-icon">${CAT_ICONS[cat]||"◆"}</span>
+        <span class="section-hdr-title">${cat}</span>
+        <span class="section-hdr-badge">${catTools.length}</span>
+      </div>
+      <span class="section-hdr-line"></span>
+    </div>
+    <div class="tools-grid${viewMode==='list'?' list-view':''}" id="grid-${cat.replace(/\W+/g,'')}"></div>`;
+  container.appendChild(block);
+  const grid = block.querySelector(".tools-grid");
+  catTools.forEach(t => grid.appendChild(buildToolCard(t)));
+}
+
+/* ── Controls ── */
+function setCat(btn, cat) {
+  document.querySelectorAll(".nav-item[data-cat]").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  activeCat = cat;
+  render();
+}
+
+function setPricing(btn, pricing) {
+  document.querySelectorAll(".filter-pill").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  activePricing = pricing;
+  render();
+}
+
+function onSearch(val) {
+  searchQ = val;
+  if (val) {
+    document.querySelectorAll(".nav-item[data-cat]").forEach(b => b.classList.remove("active"));
+    document.querySelector(".nav-item[data-cat='all']").classList.add("active");
+    activeCat = "all";
+  }
+  render();
+}
+
+function setView(mode) {
+  viewMode = mode;
+  document.getElementById("btn-grid").classList.toggle("active", mode==="grid");
+  document.getElementById("btn-list").classList.toggle("active", mode==="list");
+  render();
+}
+
+function toggleTheme() {
+  const html = document.documentElement;
+  html.dataset.theme = html.dataset.theme === "dark" ? "" : "dark";
+}
+
+/* ── Modal ── */
+function openModal(t) {
+  const overlay = document.getElementById("modal-overlay");
+
+  /* accent bar */
+  document.getElementById("modal-accent-bar").style.background = t.accentColor || "var(--accent)";
+  document.getElementById("modal").style.setProperty("--modal-accent", t.accentColor || "#F59E0B");
+
+  /* icon */
+  const iconEl = document.getElementById("modal-icon");
+  iconEl.textContent = t.icon;
+  iconEl.style.background = t.iconBg;
+
+  /* name */
+  document.getElementById("modal-name").textContent = t.name;
+
+  /* meta badges */
+  const meta = document.getElementById("modal-meta");
+  meta.innerHTML = `
+    <span class="badge ${PRICING_BADGE[t.pricing]}">${PRICING_LABEL[t.pricing]}</span>
+    <span class="badge" style="background:var(--bg-subtle);color:var(--text-secondary)">${t.category}</span>
+    ${t.featured ? '<span class="badge badge-featured">Featured</span>' : ''}
+    ${t.isNew    ? '<span class="badge badge-new">New</span>'           : ''}
+  `;
+
+  /* description */
+  document.getElementById("modal-desc").textContent = t.desc;
+
+  /* tags */
+  const tagsWrap = document.getElementById("modal-tags-wrap");
+  const tagsEl   = document.getElementById("modal-tags");
+  if (t.tags && t.tags.length) {
+    tagsEl.innerHTML = t.tags.map(tg => `<span class="tag">${tg}</span>`).join("");
+    tagsWrap.style.display = "";
+  } else {
+    tagsWrap.style.display = "none";
+  }
+
+  /* rating */
+  const ratingWrap = document.getElementById("modal-rating-wrap");
+  if (t.rating) {
+    const stars  = document.getElementById("modal-stars");
+    const val    = document.getElementById("modal-rating-val");
+    const bar    = document.getElementById("modal-rating-bar");
+    const full   = Math.floor(t.rating);
+    const half   = t.rating - full >= 0.5;
+    let starsHtml = "";
+    for (let i = 1; i <= 5; i++) {
+      if (i <= full)        starsHtml += '<span class="rating-star" style="color:#F59E0B">★</span>';
+      else if (i === full+1 && half) starsHtml += '<span class="rating-star" style="color:#F59E0B">½</span>';
+      else                  starsHtml += '<span class="rating-star" style="color:var(--border-strong)">★</span>';
+    }
+    stars.innerHTML = starsHtml;
+    val.textContent = t.rating.toFixed(1) + " / 5";
+    bar.style.width = (t.rating / 5 * 100).toFixed(0) + "%";
+    bar.style.background = t.accentColor || "#F59E0B";
+    ratingWrap.style.display = "";
+  } else {
+    ratingWrap.style.display = "none";
+  }
+
+  /* pros & cons */
+  const pcWrap = document.getElementById("modal-pc-wrap");
+  const hasPros = t.pros && t.pros.length;
+  const hasCons = t.cons && t.cons.length;
+  if (hasPros || hasCons) {
+    const prosEl = document.getElementById("modal-pros");
+    const consEl = document.getElementById("modal-cons");
+    prosEl.innerHTML = (t.pros || []).map(p =>
+      `<li><span class="pc-bullet">✓</span><span>${p}</span></li>`).join("");
+    consEl.innerHTML = (t.cons || []).map(c =>
+      `<li><span class="pc-bullet">✕</span><span>${c}</span></li>`).join("");
+    pcWrap.style.display = "";
+  } else {
+    pcWrap.style.display = "none";
+  }
+
+  /* visit button */
+  const visitBtn = document.getElementById("modal-visit-btn");
+  visitBtn.onclick = () => t.url && window.open(t.url, "_blank");
+  visitBtn.style.opacity = t.url ? "1" : "0.4";
+  visitBtn.style.pointerEvents = t.url ? "" : "none";
+
+  /* open */
+  document.body.style.overflow = "hidden";
+  overlay.classList.add("open");
+}
+
+function closeModal() {
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function closeModalOnBackdrop(e) {
+  if (e.target === document.getElementById("modal-overlay")) closeModal();
+}
+
+/* Esc key closes modal */
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+/* Initial render */
+render();
+</script>
+</body>
+</html>
